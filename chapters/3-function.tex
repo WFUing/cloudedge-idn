@@ -1,5 +1,5 @@
 
-\chapter{面向模型推理的云边协同调度}
+\chapter{面向模型推理的云边协同调度方法}
 
 本章系统地阐述了面向模型推理的云边协同调度。首先，详细介绍了云边协同下的模型推理，包括云边协同系统的拓扑结构、模型推理的云边协同场景，以及分层拓扑下的委托推理流程。基于抽象的树状拓扑结构，本文提出了一种面向模型推理的云边协同调度模型，并设计了相应的调度算法，以优化资源利用和任务执行效率。
 
@@ -58,7 +58,7 @@ IoT设备产生的时序数据具有连续性强、时间敏感性高的特点�
   \label{fig:3-4aiload}
 \end{figure}
 
-如图\ref{fig:3-4aiload}所示，在云边协同架构中，预处理逻辑的部署位置具有高度灵活性。一种常见的方案是将预处理任务集成到设备管理器中，在数据采集阶段实时完成。这种方式在某些场景下能够有效减少传输至后续环节的数据量，从而降低带宽占用和系统延迟，特别适用于对时效性要求较高的应用。例如，在工业自动化或智能交通系统中，实时处理可以确保关键信息的及时传递。另一种方案则是将预处理任务推迟到AI推理实例中执行。这种设计更适合那些需要结合上下文信息或全局视图进行复杂处理的任务。例如，在医疗监测或环境分析中，可能需要综合多个传感器的数据来进行更全面的分析，此时在云端进行预处理可以利用更强的计算资源和全局数据视图。此外，云边环境中的数据转发器进一步增强了系统的灵活性。数据转发器可以根据实际需求，选择性地传输已预处理的结构化数据或原始数据。这种机制不仅能够在保持数据时效性的同时满足不同场景的需求，还为资源分配和性能优化提供了更多可能性。
+如图\ref{fig:3-4aiload}所示，在云边协同架构中，预处理逻辑的部署位置具有高度灵活性。一种常见的方案是将预处理任务集成到设备管理器中，在数据采集阶段实时完成。这种方式在某些场景下能够有效减少传输至后续环节的数据量，从而降低带宽占用和系统延迟，特别适用于对时效性要求较高的应用。例如，在工业自动化或智能交通系统中，实时处理可以确保关键信息的及时传递。另一种方案则是将预处理任务推迟到模型推理实例中执行。这种设计更适合那些需要结合上下文信息或全局视图进行复杂处理的任务。例如，在医疗监测或环境分析中，可能需要综合多个传感器的数据来进行更全面的分析，此时在云端进行预处理可以利用更强的计算资源和全局数据视图。此外，云边环境中的数据转发器进一步增强了系统的灵活性。数据转发器可以根据实际需求，选择性地传输已预处理的结构化数据或原始数据。这种机制不仅能够在保持数据时效性的同时满足不同场景的需求，还为资源分配和性能优化提供了更多可能性。
 
 % \begin{figure}[ht]
 %   \centering
@@ -67,7 +67,7 @@ IoT设备产生的时序数据具有连续性强、时间敏感性高的特点�
 %   \label{fig:3-6ainode}
 % \end{figure}
 
-当经过预处理的数据传递至计算节点后，推理过程即可在对应的AI推理实例上执行。然而，AI推理实例对不同计算节点的适配性存在显著差异，这种差异主要体现在深度学习框架依赖、硬件指令集支持以及推理资源需求等方面。首先，AI模型通常在特定框架及其版本下开发，而不同计算节点可能未安装所需的框架或版本。此外，许多框架的版本与其对硬件指令集的支持深度绑定，这种绑定关系直接影响模型的部署和运行效率。例如，当前主流框架（如TensorFlow）的最新版本通常默认启用AVX2指令集优化，以大幅提升张量运算性能。然而，在将其部署到不支持AVX2指令的边缘节点时，则需要通过重新编译框架源码或降级至兼容版本来实现正常运行。即便目标节点具备相应的硬件指令集，不同架构（如x86与ARM）对同一指令集的优化程度也可能导致运行效率的显著差异\cite{ren2019performance}。这种硬件架构的异构性要求在部署AI负载时，必须明确其对指令集和架构的具体需求。
+当经过预处理的数据传递至计算节点后，推理过程即可在对应的AI推理实例上执行。然而，模型推理实例对不同计算节点的适配性存在显著差异，这种差异主要体现在深度学习框架依赖、硬件指令集支持以及推理资源需求等方面。首先，模型通常在特定框架及其版本下开发，而不同计算节点可能未安装所需的框架或版本。此外，许多框架的版本与其对硬件指令集的支持深度绑定，这种绑定关系直接影响模型的部署和运行效率。例如，当前主流框架（如TensorFlow）的最新版本通常默认启用AVX2指令集优化，以大幅提升张量运算性能。然而，在将其部署到不支持AVX2指令的边缘节点时，则需要通过重新编译框架源码或降级至兼容版本来实现正常运行。即便目标节点具备相应的硬件指令集，不同架构（如x86与ARM）对同一指令集的优化程度也可能导致运行效率的显著差异\cite{ren2019performance}。这种硬件架构的异构性要求在部署AI负载时，必须明确其对指令集和架构的具体需求。
 
 其次，资源需求是影响AI负载适配性的另一关键因素。许多大型深度学习模型在设计之初便针对GPU等高性能加速器进行优化，依赖于GPU的大规模并行计算能力。然而，在资源受限的边缘节点上，可能缺乏GPU或其他专用加速器，导致模型无法运行或运行效率低下。同时，为了充分利用节点的计算能力，不同的AI负载实例会根据节点性能配置相应的批处理规模。例如，在高性能云端节点上可以采用较大的批处理规模以提高吞吐量，而在资源受限的边缘节点上则需降低批处理规模以避免资源过载。
 
@@ -91,34 +91,34 @@ IoT设备产生的时序数据具有连续性强、时间敏感性高的特点�
 下面给出面向模型推理的云边协同调度模型的形式化定义：
 
 \begin{definition}[面向模型推理的云边协同调度模型]
-面向模型推理的云边协同调度模型可表示为一个5元组：
+面向模型推理场景的云边协同调度模型可表示为一个5元组：
 \end{definition}
 
 $$
-\mathcal{M} = (\mathcal{D}, \mathcal{E}, \mathcal{C}, \mathcal{L}, \mathcal{B})
+M = (D, E, C, L, B)
 $$
 
 其中：
 
 \begin{itemize}
-    \item $\mathcal{D} = \{d_i\}_{i=1}^n$ 表示终端设备集合，其中每个终端设备$d_i$用于物联网数据采集，具体定义详见定义\ref{def:device}。
-    \item $\mathcal{E} = \{e_j\}_{j=1}^m$ 表示边缘节点集合，每个节点$e_j$具有有限计算资源，部署在网络边缘靠近终端设备的位置，具有低时延响应能力。
-    \item $\mathcal{C} = \{c_q\}_{q=1}^r$ 表示云端节点集合，每个节点$c_q$配备高性能计算资源，适用于计算密集的大规模模型推理或模型训练。
-    \item $\mathcal{L} = \{\ell_s\}_{s=1}^u$ 表示模型推理实例集合，其中每个模型负载实例$\ell_s$负责处理终端设备产生的实时流数据并执行推理任务，具体定义详见定义\ref{def:aimodel}。
-    \item $\mathcal{B} \in \mathbb{R}^{\mu \times \mu}$ 为带宽矩阵，其中$\mu=m+r$，表示云边环境下的所有节点数量，元素 $b_{pq}$ 表示节点 $p$ 到节点 $q$ 的有效带宽。
+    \item $D = \{d_i\}_{i=1}^n$ 表示终端设备集合，其中每个终端设备$d_i$用于物联网数据采集，具体定义详见定义\ref{def:device}。
+    \item $E = \{e_j\}_{j=1}^m$ 表示边缘节点集合，每个节点$e_j$具有有限计算资源，部署在网络边缘靠近终端设备的位置，具有低时延响应能力。
+    \item $C = \{c_q\}_{q=1}^r$ 表示云端节点集合，每个节点$c_q$配备高性能计算资源，适用于计算密集的大规模模型推理或模型训练。
+    \item $L = \{l_s\}_{s=1}^u$ 表示模型推理实例集合，其中每个模型负载实例$l_s$负责处理终端设备产生的实时流数据并执行推理任务，具体定义详见定义\ref{def:aimodel}。
+    \item $B \in \mathbb{R}^{\mu \times \mu}$ 为带宽矩阵，其中$\mu=m+r$，表示云边环境下的所有节点数量，元素 $b_{pq}$ 表示节点 $p$ 到节点 $q$ 的有效带宽。
 \end{itemize}
 
 为了更清晰地描述模型的动态运行特性，本文将云边平台的运行时间划分为一系列等长时间窗 $\{t_\omega\}_{\omega=1}^\infty$。其中，第 $\omega$ 个调度时间窗定义为 $t_\omega = [\tau_\omega, \tau_\omega + \Delta t)$，$\Delta t$ 表示时间窗的长度参数。在此基础上，后续章节将进一步展开对计算节点、终端设备、模型推理实例的详细分析。
 
 \subsection{计算节点}
 
-在云边协同计算架构中，计算节点作为任务处理和资源分配的核心实体，承担着数据处理、存储以及通信的关键职能。计算节点集合$\mathcal{V} = \mathcal{E} \cup \mathcal{C}$涵盖边缘节点集合$\mathcal{E}$与云端节点集合$\mathcal{C}$，总共包含$\mu=m+r$个计算节点。由于云边环境中的节点具有异构化的资源供给和硬件架构特性，为了实现高效的模型推理实例部署，需要对每个节点的资源供给能力、硬件架构特性和计算能力进行量化分析。这种量化过程能够为任务调度和资源优化提供科学依据，从而提升整体系统的性能与效率。
+在云边协同计算架构中，计算节点作为任务处理和资源分配的核心实体，承担着数据处理、存储以及通信的关键职能。计算节点集合$V = E \cup C$涵盖边缘节点集合$E$与云端节点集合$C$，总共包含$\mu=m+r$个计算节点。由于云边环境中的节点具有异构化的资源供给和硬件架构特性，为了实现高效的模型推理实例部署，需要对每个节点的资源供给能力、硬件架构特性和计算能力进行量化分析。这种量化过程能够为任务调度和资源优化提供科学依据，从而提升整体系统的性能与效率。
 
 下面给出计算节点的形式化定义：
 
 \begin{definition}[计算节点]
 \label{def:node}
-计算节点 $v_j \in \mathcal{V}$ 可表示为一个 3 元组：
+计算节点 $v_j \in V$ 可表示为一个 3 元组：
 \end{definition}
 
 $$
@@ -128,9 +128,9 @@ $$
 其中：
 \begin{itemize}
     \item $R_j = \{r^{k}_j\}_{k=1}^w$ 表示资源供给向量，其中 $r^{(k)}_j \in \mathbb{R}^+$ 表示第 $k$ 类资源总量。
-    \item $Arch_j \in \mathbb{H}$ 表示硬件架构，$\mathbb{H}$ 为硬件架构类型枚举集。
+    \item $Arch_j \in H$ 表示硬件架构，$H$ 为硬件架构类型枚举集。
     \item $Perf_j \in \mathbb{R}^+$ 表示计算性能，单位为每秒浮点运算次数（FLOPS）。
-    \item $Tree_j \subseteq \mathcal{V}$ 表示当前节点的子节点集合，用于描述树状拓扑结构中的下一层节点关系。
+    \item $Tree_j \subseteq V$ 表示当前节点的子节点集合，用于描述树状拓扑结构中的下一层节点关系。
 \end{itemize}
 
 通过引入 $Tree_j$，可以明确地表达云边协同架构中计算节点的层级关系。对于直接连接终端设备的最低层边缘节点，其子节点集合 $Tree_j = \emptyset$，即没有下一层节点；而对于其他中间层或顶层节点（如云端节点），其子节点集合 $Tree_j$ 包含所有直连的下一层节点。这种树状拓扑结构的设计不仅简化了系统管理复杂度，还为任务调度提供了重要的参考信息。
@@ -143,7 +143,7 @@ $$
 
 \begin{definition}[终端设备]
 \label{def:device}
-终端设备 $d_i \in \mathcal{D}$ 可表示为一个 2 元组：
+终端设备 $d_i \in D$ 可表示为一个 2 元组：
 \end{definition}
 
 $$
@@ -168,7 +168,7 @@ $$
 \varsigma_\beta = \varphi(\Phi_\beta) = \prod_{k=1}^{\zeta} f_k(X^{(k)}_\beta)
 \end{equation}
 
-其中 $f_k: \mathcal{P} \to \mathbb{R}^+$ 为预定义的属性量化函数。进一步地，终端设备 $d_i$ 的瞬时数据采集流量 $G_i(t)$ 由瞬时数据采集频率 $g_i(t)$ 和单次采集量 $\varsigma_\beta$ 共同决定，具体表达式为：
+其中 $f_k: P \to \mathbb{R}^+$ 为预定义的属性量化函数。进一步地，终端设备 $d_i$ 的瞬时数据采集流量 $G_i(t)$ 由瞬时数据采集频率 $g_i(t)$ 和单次采集量 $\varsigma_\beta$ 共同决定，具体表达式为：
 
 \begin{equation}
 G_i(t) = g_i(t) \cdot \varsigma_\beta
@@ -182,47 +182,47 @@ G_i(t) = g_i(t) \cdot \varsigma_\beta
 
 \begin{definition}[模型推理实例] 
 \label{def:aimodel}
-AI 推理实例$\ell_s \in \mathcal{L}$ 可表示为一个 5 元组：
+AI 推理实例$l_s \in L$ 可表示为一个 5 元组：
 \end{definition}
 
 $$
-\ell_s = (\mathcal{F}_s,\, \mathcal{A}_s,\, \mathcal{R}_s,\, \gamma_s,\, \varpi_s)
+l_s = (F_s,\, A_s,\, R_s,\, \gamma_s,\, \varpi_s)
 $$
 
 其中：
 \begin{itemize}
-    \item $\mathcal{F}_s \in \mathbb{S}$ 表示支持的深度学习框架，$\mathbb{S}$为云边平台支持的深度学习框架枚举集。
-    \item $\mathcal{A}_s \subseteq \mathbb{H}$ 表示硬件架构需求集合，$\mathbb{H}$为硬件架构类型枚举集。
-    \item $\mathcal{R}_s = \{r^{(k)}_s\}_{k=1}^w$ 表示资源需求向量，其中$r^{(k)}_s \in \mathbb{R}^+$对应第$k$类资源的最小需求。
+    \item $F_s \in \mathbb{S}$ 表示支持的深度学习框架，$\mathbb{S}$为云边平台支持的深度学习框架枚举集。
+    \item $A_s \subseteq H$ 表示硬件架构需求集合，$H$为硬件架构类型枚举集。
+    \item $R_s = \{r^{(k)}_s\}_{k=1}^w$ 表示资源需求向量，其中$r^{(k)}_s \in \mathbb{R}^+$对应第$k$类资源的最小需求。
     \item $batch_s \in \mathbb{Z}^+$ 表示批处理规模，满足$batch_s \leq \lfloor \frac{R_s}{\delta_s} \rfloor$，其中$R_s$为设备内存容量，$\delta_s$为单样本内存占用量。
     \item $\varpi_s \in \mathbb{R}^+$ 表示单次推理运算量，单位为浮点运算次数（FLOPs）。
 \end{itemize}
 
-在明确了模型推理实例的形式化定义后，在目标节点 $v_j$上部署模型推理实例 $\ell_s$ 需要确保资源供给和硬件架构相匹配。具体而言，需满足以下条件：
+在明确了模型推理实例的形式化定义后，在目标节点 $v_j$上部署模型推理实例 $l_s$ 需要确保资源供给和硬件架构相匹配。具体而言，需满足以下条件：
 
 \begin{equation}
-R_j \geq \mathcal{R}_s, \quad \mathcal{A}_s \subseteq Arch_j
+R_j \geq R_s, \quad A_s \subseteq Arch_j
 \end{equation}
 
-其中，$R_j$ 和 $\mathcal{R}_s$ 分别表示节点 $v_j$ 的资源供给向量和模型推理实例 $\ell_s$ 的资源需求向量；$Arch_j$ 和 $\mathcal{A}_s$ 分别表示节点 $v_j$ 的硬件架构和模型推理实例 $\ell_s$ 的硬件架构需求。在节点$v_j$上成功部署模型推理实例$\ell_s$之后，可以通过推理时间预测函数$\text{Latency}_{\text{inf}}$来量化单次推理延迟，该函数可表示为：
+其中，$R_j$ 和 $R_s$ 分别表示节点 $v_j$ 的资源供给向量和模型推理实例 $l_s$ 的资源需求向量；$Arch_j$ 和 $A_s$ 分别表示节点 $v_j$ 的硬件架构和模型推理实例 $l_s$ 的硬件架构需求。在节点$v_j$上成功部署模型推理实例$l_s$之后，可以通过推理时间预测函数$\text{Latency}_{\text{inf}}$来量化单次推理延迟，该函数可表示为：
 
 \begin{equation}
-\text{Latency}_{\text{inf}}(\ell_s, v_j)= \frac{\varpi_s}{Perf_j}
+\text{Latency}_{\text{inf}}(l_s, v_j)= \frac{\varpi_s}{Perf_j}
 \end{equation}
 
-其中，$\varpi_s$ 为模型推理实例$\ell_s$的单次推理运算量，$Perf_j$为节点$v_j$的计算性能。在明确了单次推理延迟$\text{Latency}_{\text{inf}}$之后，对于任意时间窗$t_\omega = [\tau_\omega, \tau_\omega + \Delta t)$，节点$v_j$可承载的模型推理实例$\ell_s$的最大吞吐量$Q(\ell_s, v_j, t_\omega)$可以通过以下公式计算：
+其中，$\varpi_s$ 为模型推理实例$l_s$的单次推理运算量，$Perf_j$为节点$v_j$的计算性能。在明确了单次推理延迟$\text{Latency}_{\text{inf}}$之后，对于任意时间窗$t_\omega = [\tau_\omega, \tau_\omega + \Delta t)$，节点$v_j$可承载的模型推理实例$l_s$的最大吞吐量$Q(l_s, v_j, t_\omega)$可以通过以下公式计算：
 
 \begin{equation}
-Q(\ell_s, v_j, t_\omega) = \left\lfloor \frac{\Delta t}{\text{Latency}_{\text{inf}}(\ell_s, v_j)} \right\rfloor \cdot batch_s
+Q(l_s, v_j, t_\omega) = \left\lfloor \frac{\Delta t}{\text{Latency}_{\text{inf}}(l_s, v_j)} \right\rfloor \cdot batch_s
 \end{equation}
 
-其中，$batch_s$表示模型推理实例$\ell_s$的批处理规模。该指标$Q(\ell_s, v_j, t_\omega)$表示节点$v_j$在时间窗$t_\omega$内对模型推理实例$\ell_s$的最大服务容量，是衡量节点资源利用率和服务能力的重要参考。每一个 AI 推理实例 $\ell_s$ 在时间窗 $t_\omega$ 中都有可能已经被调度分配了对应的任务请求。因此，本文用 $C(\ell_s, v_j, t_\omega)$ 表示节点 $v_j$ 在时间窗 $t_\omega$ 内剩余的可用容量。这个剩余容量可以表示为：
+其中，$batch_s$表示模型推理实例$l_s$的批处理规模。该指标$Q(l_s, v_j, t_\omega)$表示节点$v_j$在时间窗$t_\omega$内对模型推理实例$l_s$的最大服务容量，是衡量节点资源利用率和服务能力的重要参考。每一个 AI 推理实例 $l_s$ 在时间窗 $t_\omega$ 中都有可能已经被调度分配了对应的任务请求。因此，本文用 $C(l_s, v_j, t_\omega)$ 表示节点 $v_j$ 在时间窗 $t_\omega$ 内剩余的可用容量。这个剩余容量可以表示为：
 
 \begin{equation}
-C(\ell_s, v_j, t_\omega) = Q(\ell_s, v_j, t_\omega) - \text{AllocatedTasks}(\ell_s, v_j, t_\omega)
+C(l_s, v_j, t_\omega) = Q(l_s, v_j, t_\omega) - \text{AllocatedTasks}(l_s, v_j, t_\omega)
 \end{equation}
 
-其中，$\text{AllocatedTasks}(\ell_s, v_j, t_\omega)$ 表示在时间窗 $t_\omega$ 已经分配给节点 $v_j$ 的模型推理实例 $\ell_s$ 的任务数量。在实际部署过程中，$Q(\ell_s, v_j, t_\omega)$和$C(\ell_s, v_j, t_\omega)$的指标由系统监控服务动态维护，并作为分层委托调度决策过程的核心输入之一。调度器需确保分配至节点$v_j$的模型推理实例$\ell_s$的请求速率不超过其最大吞吐量$Q(\ell_s, v_j, t_\omega)$，从而避免因计算资源过载而导致的排队延迟或任务失败。
+其中，$\text{AllocatedTasks}(l_s, v_j, t_\omega)$ 表示在时间窗 $t_\omega$ 已经分配给节点 $v_j$ 的模型推理实例 $l_s$ 的任务数量。在实际部署过程中，$Q(l_s, v_j, t_\omega)$和$C(l_s, v_j, t_\omega)$的指标由系统监控服务动态维护，并作为分层委托调度决策过程的核心输入之一。调度器需确保分配至节点$v_j$的模型推理实例$l_s$的请求速率不超过其最大吞吐量$Q(l_s, v_j, t_\omega)$，从而避免因计算资源过载而导致的排队延迟或任务失败。
 
 
 \subsection{流式数据分流机制}
@@ -236,17 +236,17 @@ C(\ell_s, v_j, t_\omega) = Q(\ell_s, v_j, t_\omega) - \text{AllocatedTasks}(\ell
 \end{definition}
 
 $$
-\zeta: g_i^{t_\omega} \to \left( g_{i1}^{t_\omega},\ g_{i2}^{t_\omega},\ \dots,\ g_{i\mu}^{t_\omega} \right) \ \text{with} \ \mathcal{Z}_i^{t_\omega} = \{z_{ij}^{t_\omega}\}_{j=1}^\mu
+\zeta: g_i^{t_\omega} \to \left( g_{i1}^{t_\omega},\ g_{i2}^{t_\omega},\ \dots,\ g_{i\mu}^{t_\omega} \right) \ \text{with} \ Z_i^{t_\omega} = \{z_{ij}^{t_\omega}\}_{j=1}^\mu
 $$
 
 其中：
 \begin{itemize}
     \item $g_i^{t_\omega}$表示时间窗$t_\omega$内设备$d_i$的数据总量。
     \item $g_{ij}^{t_\omega}$表示分流给计算节点$v_j$的数据子流，满足$\sum\limits_{j=1}^\mu g_{ij}^{t_\omega} = g_i^{t_\omega}$，且子流大小与比例变量满足$g_{ij}^{t_\omega} = z_{ij}^{t_\omega} \cdot g_i^{t_\omega}$。
-    \item 分流比例集合$\mathcal{Z}_i^{t_\omega} = \{z_{ij}^{t_\omega}\}_{j=1}^\mu$需满足：$\forall j \in \{1,\dots,\mu\},\ 0 \leq z_{ij}^{t_\omega} \leq 1$，且$\sum\limits_{j=1}^\mu z_{ij}^{t_\omega} = 1$。
+    \item 分流比例集合$Z_i^{t_\omega} = \{z_{ij}^{t_\omega}\}_{j=1}^\mu$需满足：$\forall j \in \{1,\dots,\mu\},\ 0 \leq z_{ij}^{t_\omega} \leq 1$，且$\sum\limits_{j=1}^\mu z_{ij}^{t_\omega} = 1$。
 \end{itemize}
 
-该函数通过分流变量$\mathcal{Z}_i^{t_\omega}$将终端设备产生的数据流划分为$\mu$个计算节点关联的数据子流。在实际部署中，数据流的跨节点转发不可避免地引入了传输时延。例如，假设节点$v_j$上的设备$d_i$的所有采集数据均需转发至计算节点$v_{j'}$，其传输时延可由下式计算：
+该函数通过分流变量$Z_i^{t_\omega}$将终端设备产生的数据流划分为$\mu$个计算节点关联的数据子流。在实际部署中，数据流的跨节点转发不可避免地引入了传输时延。例如，假设节点$v_j$上的设备$d_i$的所有采集数据均需转发至计算节点$v_{j'}$，其传输时延可由下式计算：
 
 \begin{equation}
 \text{Latency}_\text{trans}=\frac{G_i}{b_{jj'}}
@@ -275,31 +275,31 @@ $$
 \begin{algorithmic}[1]
 \REQUIRE  
   待调度数据流及单次采集量集合$\{(g_i, \varsigma_{\beta_i})\}_{i=1}^p$, 
-  计算节点集合$\mathcal{V}$的队列剩余容量$\{C^{t_\omega}_j\}_{v_j \in \mathcal{V}}$, 带宽矩阵$\mathcal{B}$, 当前节点$v_c$的子树拓扑$Tree_{v_c}$ \\ \COMMENT{如果是 Edge mode，$g_i$可以分为本地数据流$g_i^{\text{loc}}$和外部数据流$g_i^{\text{ext}}$}
+  计算节点集合$V$的队列剩余容量$\{C^{t_\omega}_j\}_{v_j \in V}$, 带宽矩阵$B$, 当前节点$v_c$的子树拓扑$Tree_{v_c}$ \\ \COMMENT{如果是 Edge mode，$g_i$可以分为本地数据流$g_i^{\text{loc}}$和外部数据流$g_i^{\text{ext}}$}
 \ENSURE  
   数据流到计算节点的分流比例集合$\{z_{ij}^{t_\omega}\}$
   
-\STATE Initialize $z_{ij}^{t_\omega} \leftarrow 0,\ \forall g_i \in \mathcal{F}_k, v_j \in Tree_{v_c}$  
+\STATE Initialize $z_{ij}^{t_\omega} \leftarrow 0,\ \forall g_i \in F_k, v_j \in Tree_{v_c}$  
 
 \IF{Edge mode}
-\STATE $\mathcal{Q} \leftarrow \textsc{Sort}(\{g_i^{\text{loc}}\}, \varsigma_{\beta_i} \downarrow) \cup \textsc{Sort}(\{g_j^{\text{ext}}\}, \varsigma_{\beta_j} \downarrow)$
+\STATE $Q \leftarrow \textsc{Sort}(\{g_i^{\text{loc}}\}, \varsigma_{\beta_i} \downarrow) \cup \textsc{Sort}(\{g_j^{\text{ext}}\}, \varsigma_{\beta_j} \downarrow)$
   \\ \COMMENT{本地数据流$g_i^{\text{loc}}$优先，按单次数据量$\varsigma_{\beta_i}$降序}
 \ELSIF{Cloud mode}
-\STATE Sort $\mathcal{Q} \leftarrow \textsc{Sort}( g_i, \varsigma_{\beta_i} \uparrow)$ 
+\STATE Sort $Q \leftarrow \textsc{Sort}( g_i, \varsigma_{\beta_i} \uparrow)$ 
     \COMMENT{按剩余数据量升序排列}
 \ENDIF
 
-\FOR{$(g_i, \varsigma_{\beta_i}) \in \mathcal{Q}$} 
-  \STATE Filter $\mathcal{N}_i \leftarrow \{v_j \in Tree_{v_c} \mid \mathcal{A}_s \subseteq Arch_j \wedge R_j \geq \mathcal{R}_s \wedge C^{t_\omega}_j > 0\}$  
+\FOR{$(g_i, \varsigma_{\beta_i}) \in Q$} 
+  \STATE Filter $N_i \leftarrow \{v_j \in Tree_{v_c} \mid A_s \subseteq Arch_j \wedge R_j \geq R_s \wedge C^{t_\omega}_j > 0\}$  
     \\ \COMMENT{筛选兼容且有剩余容量的子节点}
-  \STATE Compute $\Theta_j = \frac{\varsigma_{\beta_i}}{\mathcal{B}(v_c,v_j)} + \frac{\varpi_s}{Perf_j}$
-  \STATE Order $\mathcal{M}_i \leftarrow \textsc{Sort}(\mathcal{N}_i, \Theta_j \uparrow)$  
+  \STATE Compute $\Theta_j = \frac{\varsigma_{\beta_i}{B}(v_c,v_j)} + \frac{\varpi_s}{Perf_j}$
+  \STATE Order $M_i \leftarrow \textsc{Sort}(N_i, \Theta_j \uparrow)$  
     \COMMENT{按端到端时延升序排序}
-  \STATE Set $r_i \leftarrow g_{i,\text{res}}^{t_\omega}$
+  \STATE Set $r_i \leftarrow g_{i,\text{res}^{t_\omega}}$
 
-  \WHILE{$r_i > 0$ \AND $\mathcal{M}_i \neq \emptyset$}
-    \STATE Dequeue $v_j \leftarrow \mathcal{M}_i.\textsc{Dequeue}()$
-    \STATE Calculate $a_j \leftarrow C^{t_\omega}_j - \sum_{f_k \in \mathcal{F}_k} z_{kj}^{t_\omega} \cdot g_{k,\text{res}}^{t_\omega}$
+  \WHILE{$r_i > 0$ \AND $M_i \neq \emptyset$}
+    \STATE Dequeue $v_j \leftarrow M_i.\textsc{Dequeue}()$
+    \STATE Calculate $a_j \leftarrow C^{t_\omega}_j - \sum_{f_k \in F_k} z_{kj}^{t_\omega} \cdot g_{k,\text{res}^{t_\omega}}$
     
     \IF{$a_j \geq r_i$}
       \STATE Assign $z_{ij}^{t_\omega} \leftarrow r_i / g_{i,\text{res}}^{t_\omega}$  
@@ -320,9 +320,9 @@ $$
 
 基于上述分析，本文提出了一种结合贪心策略与多维度优先级队列的云边协同AI推理调度算法。该算法首先根据设备单次数据采集量或剩余数据量对流式数据进行优先级排序，构建初始优先级队列。在此基础上，针对每条流式数据，算法筛选出集群中具有剩余计算队列容量的候选节点，并进一步依据端到端时延建立时延优先队列。通过引入时延敏感度感知机制，算法有效降低了节点之间调度的总时延，尽可能满足任务的时延约束要求。此外，算法采用动态分配策略，在候选节点间按照剩余容量比例分配数据流。这一设计不仅避免了单一节点过载的问题，还最大化了集群内部计算资源的利用率。为了进一步优化性能，该算法还引入了自适应调整机制，根据实时网络状况和计算负载动态调整优先级队列和调度策略。这种自适应性确保了算法在不同场景下的鲁棒性和灵活性。通过上述机制，该算法在保证服务质量的同时实现了高效的资源调度与任务分配，具体流程详见算法\ref{alg:cluster_scheduling}。
 
-算法\ref{alg:cluster_scheduling}的总体时间复杂度为$O(|\mathcal{F}_k| \log |\mathcal{F}_k| + |\mathcal{F}_k| \cdot |Tree_c| \log |Tree_c|)$，其中$|\mathcal{F}_k|$表示待调度数据流的数量，$|Tree_c|$表示当前节点$v_c$的子树拓扑中的节点数。具体来说，生成数据流优先级队列时间复杂度为$O(|\mathcal{F}_k| \log |\mathcal{F}_k|)$；节点匹配阶段的时间复杂度为$O(|\mathcal{F}_k| \cdot |Tree_c| \log |Tree_c|)$；分配阶段总时间复杂度为$O(|\mathcal{F}_k| \cdot \langle d \rangle)$，在最坏情况下可以简化为$O(|\mathcal{F}_k|)$，其中$\langle d \rangle$表示平均迭代深度且满足$\langle d \rangle \leq \min(|\mathcal{F}_k|, |Tree_c|)$。这种时间复杂度使得算法在大规模数据流和节点数量的情况下仍能保持较高的效率，特别适用于动态和复杂的云边协同环境。
+算法\ref{alg:cluster_scheduling}的总体时间复杂度为$O(|F_k| \log |F_k| + |F_k| \cdot |Tree_c| \log |Tree_c|)$，其中$|F_k|$表示待调度数据流的数量，$|Tree_c|$表示当前节点$v_c$的子树拓扑中的节点数。具体来说，生成数据流优先级队列时间复杂度为$O(|F_k| \log |F_k|)$；节点匹配阶段的时间复杂度为$O(|F_k| \cdot |Tree_c| \log |Tree_c|)$；分配阶段总时间复杂度为$O(|F_k| \cdot \langle d \rangle)$，在最坏情况下可以简化为$O(|F_k|)$，其中$\langle d \rangle$表示平均迭代深度且满足$\langle d \rangle \leq \min(|F_k|, |Tree_c|)$。这种时间复杂度使得算法在大规模数据流和节点数量的情况下仍能保持较高的效率，特别适用于动态和复杂的云边协同环境。
 
-算法\ref{alg:cluster_scheduling}的总体空间复杂度为$O(|Tree_c| \cdot |\mathcal{F}_k| + \max(|\mathcal{F}_k|, |Tree_c|))$。其中，分流比例矩阵$Z^{t_\omega}$的空间复杂度为$O(|Tree_c| \cdot |\mathcal{F}_k|)$，临时数据结构的空间复杂度为$O(\max(|\mathcal{F}_k|, |Tree_c|))$。这种空间复杂度设计确保了算法在处理大量数据流时能够高效利用内存资源，同时保持良好的扩展性和可维护性。
+算法\ref{alg:cluster_scheduling}的总体空间复杂度为$O(|Tree_c| \cdot |F_k| + \max(|F_k|, |Tree_c|))$。其中，分流比例矩阵$Z^{t_\omega}$的空间复杂度为$O(|Tree_c| \cdot |F_k|)$，临时数据结构的空间复杂度为$O(\max(|F_k|, |Tree_c|))$。这种空间复杂度设计确保了算法在处理大量数据流时能够高效利用内存资源，同时保持良好的扩展性和可维护性。
 
 \section{本章小结}
 

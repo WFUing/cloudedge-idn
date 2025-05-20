@@ -11,12 +11,12 @@
 % info 类用于录入个人信息
 %   带*号的为对应英文字段
 \njusetup[info]{
-    title = {面向模型推理的云边协同调度技术研究},
+    title = {面向模型推理场景的\\云边协同调度技术研究},
     % 中文题目
     % 直接填写标题就是自动换行
     % 可以使用换行控制符(\\)手动指定换行位置
     %
-    title* = {Research on Cloud-Edge Collaborative Scheduling for Model Inference},
+    title* = {Research on Cloud-Edge Collaborative Scheduling for Model Inference Scenarios},
     % 英文题目
     %
     author = {蒋一杰},
@@ -63,7 +63,7 @@
     % 第二导师全称
     % 如果确实没有第二导师，不填写即可
     %
-    submit-date = {},
+    submit-date = {2025-05-21},
     % 提交日期
     % 格式为 yyyy-mm-dd
     % 不填就是编译当天日期
@@ -79,13 +79,13 @@
     field* = {Software Engineering},
     % 研究领域
     %
-    chairman = {某某某~教授},
+    chairman = {王林章~教授},
     % 答辩委员会主席
     % 推荐使用波浪号(~)分隔姓名和职称
     %
     reviewer = {
-        某某某~教授,
-        某某某~教授
+        % 徐锋~教授,
+        % 余萍~副教授
     },
     %
     % 答辩委员会成员
@@ -100,7 +100,7 @@
     secret-level = {公开},
     % 密级
     %
-    defend-date = {},
+    defend-date = {2025-05-21},
     % 答辩日期
     % 格式为 yyyy-mm-dd
     % 不填就是编译当天日期
@@ -255,7 +255,7 @@
 % \njusetformat{footer}{}
 
 % 在盲审模式下隐藏学校信息
-\njusetup{anonymous-mode/no-nju}
+% \njusetup{anonymous-mode/no-nju}
 
 % 一些灵活调整
 % \njusetname{type}{本科毕业设计}                 % 我做的是毕业设计
